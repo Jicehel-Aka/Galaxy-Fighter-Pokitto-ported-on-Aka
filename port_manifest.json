@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "galaxy",
+  "title": "Galaxy Fighter",
+  "version": "0.1.0",
+  "platform": "Pokitto",
+  "port_level": "raw",
+  "author": "Press Play On Tape",
+  "porter": "AKA Port Studio",
+  "license": "voir LICENSE.original",
+  "copyright": "Press Play On Tape",
+  "source_repository": "https://github.com/Press-Play-On-Tape/GalaxyFighter_Pokitto",
+  "description": "Combattez une invasion extraterrestre, capturez les vaisseaux ennemis pour gagner des bonus, et defendez la galaxie. Portage du jeu Pokitto original de Press Play On Tape.",
+  "supports_save": true,
+  "supports_screenshot": true,
+  "supports_languages": false,
+  "supports_pause": false,
+  "save_directory": "/sdcard/galaxy/",
+  "license_file": "LICENSE.original"
+}
