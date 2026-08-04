@@ -41,7 +41,7 @@ void Display::ensureBuffers() {
 
 void Display::setNibble(int16_t x, int16_t y, uint8_t idx) {
     if (x < 0 || y < 0 || x >= width || y >= height) return;
-    ensureBuffers();
+    if (!screenbuffer) ensureBuffers();
     if (!screenbuffer) return;
     int off = y * (width >> 1) + (x >> 1);
     uint8_t& b = screenbuffer[off];
@@ -50,7 +50,7 @@ void Display::setNibble(int16_t x, int16_t y, uint8_t idx) {
 }
 uint8_t Display::getNibble(int16_t x, int16_t y) {
     if (x < 0 || y < 0 || x >= width || y >= height) return 0;
-    ensureBuffers();
+    if (!screenbuffer) ensureBuffers();
     if (!screenbuffer) return 0;
     int off = y * (width >> 1) + (x >> 1);
     uint8_t b = screenbuffer[off];
@@ -142,9 +142,23 @@ void Display::println(const char* s) { print(s); s_cursorX = 0; s_cursorY += FON
 void Display::present() {
     ensureBuffers();
     if (!screenbuffer || !s_decodeBuf) return;
-    for (int y = 0; y < height; ++y)
-        for (int x = 0; x < width; ++x)
-            s_decodeBuf[y*width+x] = s_palette[getNibble((int16_t)x,(int16_t)y) & 0x0F];
+    // OPTIMISATION VITESSE : l'ancienne version appelait getNibble() par
+    // pixel (verification de bornes + ensureBuffers() + recalcul complet du
+    // decalage a CHAQUE pixel, et le MEME octet indexe etait lu DEUX FOIS
+    // pour chaque paire de pixels). Ici : decalage de ligne calcule une
+    // seule fois par ligne, lecture d'octet UNIQUE partagee entre les deux
+    // pixels qu'il contient, aucun appel de fonction dans la boucle chaude.
+    const int rowBytes = width >> 1;
+    for (int y = 0; y < height; ++y) {
+        const uint8_t* srcRow = screenbuffer + y * rowBytes;
+        uint16_t* dstRow = s_decodeBuf + y * width;
+        int x = 0;
+        for (int bx = 0; bx < rowBytes; ++bx) {
+            uint8_t b = srcRow[bx];
+            dstRow[x++] = s_palette[b >> 4];
+            if (x < width) dstRow[x++] = s_palette[b & 0x0F];
+        }
+    }
     gfx.drawImage(POK_VIEWPORT_X, POK_VIEWPORT_Y, s_decodeBuf, width, height);
     gfx.update();
 }

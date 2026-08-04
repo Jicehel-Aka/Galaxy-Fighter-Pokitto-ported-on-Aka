@@ -8,6 +8,7 @@
 namespace Pokitto {
 
 uint32_t Core::frameCount = 0;
+bool Core::suppressPresent = false;
 Buttons  Core::buttons;
 
 static uint8_t  s_fps = 60;
@@ -86,7 +87,7 @@ bool Core::update() {
     s_lastFrameMs = t;
     s_firstFrame = false;
 
-    if (frameCount > 0) Display::present();   // affiche la frame precedente avant d'en dessiner une nouvelle
+    if (frameCount > 0 && !suppressPresent) Display::present();   // affiche la frame precedente avant d'en dessiner une nouvelle
     input_poll(g_keys);
     // BUG TROUVE ET CORRIGE : Sound::poll() n'etait jamais appele -- sfxDataPtr
     // ne se mettait jamais a jour, Utils::sfxOver() renvoyait toujours faux,
