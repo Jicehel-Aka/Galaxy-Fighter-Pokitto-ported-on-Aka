@@ -39,6 +39,10 @@ extern "C" void app_main(void) {
     gfx.set_refresh_rate(60);
 
     akaRuntime.begin("galaxy");
+    static const char* const kControls[] = { "CTRL_MOVE", "CTRL_FIRE", nullptr };
+    akaRuntime.setControlsKeys(kControls);
+    akaRuntime.setCredits("Galaxy Fighter", "Press Play On Tape", "BSD 3-Clause",
+                           "github.com/Press-Play-On-Tape/GalaxyFighter_Pokitto");
 
     cookie.begin("GALAXY", sizeof(cookie), (char*)&cookie);
 
@@ -57,6 +61,11 @@ extern "C" void app_main(void) {
     game.setup(&cookie);
 
     while (PC::isRunning()) {
+        // BUG TROUVE ET CORRIGE : PC::update() (donc Display::present()) et le
+        // menu systeme (aka_runtime) se marchaient dessus en alternance,
+        // provoquant un clignotement -- on suspend le present() du jeu tant
+        // que le menu est ouvert.
+        PC::suppressPresent = akaRuntime.isMenuOpen();
         if (!PC::update()) continue;
         if (!akaRuntime.update(g_keys)) continue;
         PC::sound.updateStream();
