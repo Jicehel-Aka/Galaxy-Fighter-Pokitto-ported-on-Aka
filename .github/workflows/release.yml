@@ -1,0 +1,99 @@
+name: Build and publish releases
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install SDL2 and CMake
+        run: sudo apt-get update && sudo apt-get install --yes cmake g++ libsdl2-dev zip
+      - name: Build Linux
+        run: |
+          cmake -S desktop -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release --parallel
+          mkdir -p dist/GalaxyFighter-linux
+          cp build/galaxy-fighter dist/GalaxyFighter-linux/
+          cp -R build/assets dist/GalaxyFighter-linux/
+          cp LICENSE LICENSE.original dist/GalaxyFighter-linux/
+          cp README.md dist/GalaxyFighter-linux/
+          cd dist && zip -r GalaxyFighter-linux-x64.zip GalaxyFighter-linux
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-release
+          path: dist/GalaxyFighter-linux-x64.zip
+
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install SDL2
+        run: vcpkg install sdl2:x64-windows-static
+      - name: Build Windows
+        shell: pwsh
+        run: |
+          cmake -S desktop -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static
+          cmake --build build --config Release --parallel
+          New-Item -ItemType Directory -Force dist\GalaxyFighter-windows | Out-Null
+          Copy-Item build\Release\galaxy-fighter.exe dist\GalaxyFighter-windows\
+          Copy-Item -Recurse build\assets dist\GalaxyFighter-windows\
+          Copy-Item LICENSE,LICENSE.original,README.md dist\GalaxyFighter-windows\
+          Compress-Archive -Path dist\GalaxyFighter-windows -DestinationPath dist\GalaxyFighter-windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: dist/GalaxyFighter-windows-x64.zip
+
+  android:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK components
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0" "cmake;3.22.1" "ndk;27.2.12479018"
+      - name: Download SDL2 Android support
+        run: |
+          mkdir -p android/SDL
+          curl -L --fail --silent --show-error https://github.com/libsdl-org/SDL/releases/download/release-2.30.11/SDL2-2.30.11.tar.gz | tar -xz --strip-components=1 -C android/SDL
+      - name: Build Android APK
+        run: |
+          cd android
+          APP_VERSION="${GITHUB_REF_NAME#v}"
+          gradle --no-daemon --stacktrace -PappVersion="$APP_VERSION" -PappVersionCode="$GITHUB_RUN_NUMBER" assembleRelease
+          mkdir -p ../dist
+          cp app/build/outputs/apk/release/app-release-unsigned.apk ../dist/GalaxyFighter-android-unsigned.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: dist/GalaxyFighter-android-unsigned.apk
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [linux, windows, android]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          pattern: "*-release"
+          merge-multiple: true
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: release-assets/*

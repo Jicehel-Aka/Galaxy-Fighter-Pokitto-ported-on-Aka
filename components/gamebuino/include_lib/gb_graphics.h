@@ -20,7 +20,7 @@ Authors:
  - Jean-Marie Papillon
 */
 #include "stdint.h"
-#include "gb_ll_LCD.h"
+#include "gb_ll_lcd.h"
 #pragma once
 
 class gb_graphics {
@@ -140,5 +140,4 @@ class gb_graphics {
         uint32_t u32_last_stat_count = 0;
         float f32_fps_stat = 0;
 };
-
 
