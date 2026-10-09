@@ -35,6 +35,7 @@ target_include_directories(galaxy-fighter PRIVATE
     "${CMAKE_CURRENT_LIST_DIR}/../components/gamebuino/include_lib"
     "${CMAKE_CURRENT_LIST_DIR}/../components/gamebuino/include_ll"
 )
+target_compile_definitions(galaxy-fighter PRIVATE INCLUDE_SOUND_FROM_SD INCLUDE_SOUND)
 if(WIN32 AND TARGET SDL2::SDL2main)
     target_link_libraries(galaxy-fighter PRIVATE SDL2::SDL2main)
 endif()

@@ -106,10 +106,15 @@ scores sont stockés dans le répertoire de préférences SDL2 de l'utilisateur.
 
 ## Compiler pour Android
 
-Installer JDK 17, Android SDK/NDK et CMake 3.22.1. Placer les sources SDL2
-(version 2.30.11) dans `android/SDL`, puis lancer :
+Installer JDK 17, Gradle 8.9, Android SDK/NDK et CMake 3.22.1. La compilation
+utilise les plateformes Android 35, les Build Tools 35.0.0 et le NDK
+27.2.12479018. Télécharger les sources SDL2 version 2.30.11 dans `android/SDL`
+depuis la racine du dépôt :
 
 ```sh
+mkdir -p android/SDL
+curl -L --fail https://github.com/libsdl-org/SDL/releases/download/release-2.30.11/SDL2-2.30.11.tar.gz \
+  | tar -xz --strip-components=1 -C android/SDL
 cd android
 gradle assembleDebug
 ```
@@ -124,18 +129,22 @@ Android de SDL2 depuis `android/SDL` et intègre la musique depuis
 ## Releases
 
 Le workflow GitHub Actions `.github/workflows/release.yml` compile Windows,
-Linux et Android. Pousser un tag `v*` déclenche les builds puis crée une
-release GitHub avec les archives Windows/Linux et l'APK Android **non signé**.
-Par exemple, après avoir poussé les changements à publier, créer et envoyer un
-tag annoté :
+Linux et Android. Pour créer une release depuis le site GitHub, ouvrir
+**Releases > Draft a new release**, saisir un nouveau tag commençant par `v`
+(par exemple `v1.0.1`), choisir `main` comme cible si la version à publier y
+est fusionnée, puis cliquer **Publish release**. La création du tag déclenche
+le workflow ; après réussite des trois builds, les archives Windows/Linux et
+l'APK Android sont ajoutés à la release.
+
+On peut également créer et pousser le tag annoté en ligne de commande :
 
 ```sh
-git tag -a v0.1.0 -m "Galaxy Fighter 0.1.0"
-git push origin v0.1.0
+git tag -a v1.0.1 -m "Galaxy Fighter 1.0.1"
+git push origin v1.0.1
 ```
 
-Le workflow compile chaque système puis attache les fichiers à la release du
-tag. L'APK Android attaché est signé avec la clé de débogage Gradle pour
+L'APK Android attaché, `GalaxyFighter-android-debug.apk`, est signé avec la clé
+de débogage Gradle pour
 permettre l'installation directe ; ce n'est pas une signature de production.
 Le déclenchement manuel (`workflow_dispatch`) ne publie pas de release, mais
 conserve les archives comme artefacts du workflow. La signature de production
