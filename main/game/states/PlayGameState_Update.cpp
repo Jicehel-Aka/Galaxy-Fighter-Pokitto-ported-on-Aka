@@ -379,8 +379,18 @@ GameStateType PlayGameState::update(GameStateType currentState, GameCookie *cook
 
     // Should the enemy launch a bullet?
 
-    Rect playerRect = { this->player.getX() + 2, this->player.getY() + 2, this->player.getWidth() - 2, this->player.getHeight() - 2 };
-    Rect playerRect2 = { this->player.getX() + 2 + 16, this->player.getY() + 2, this->player.getWidth() - 2, this->player.getHeight() - 2 };
+    Rect playerRect = {
+        static_cast<int16_t>(this->player.getX() + 2),
+        static_cast<int16_t>(this->player.getY() + 2),
+        static_cast<uint8_t>(this->player.getWidth() - 2),
+        static_cast<uint8_t>(this->player.getHeight() - 2)
+    };
+    Rect playerRect2 = {
+        static_cast<int16_t>(this->player.getX() + 2 + 16),
+        static_cast<int16_t>(this->player.getY() + 2),
+        static_cast<uint8_t>(this->player.getWidth() - 2),
+        static_cast<uint8_t>(this->player.getHeight() - 2)
+    };
     
     {
         CapturedPlayer capturedPlayer = this->captureController.getCapturedPlayer();
@@ -438,7 +448,11 @@ GameStateType PlayGameState::update(GameStateType currentState, GameCookie *cook
         
                     if (enemyBullet->isEnabled()) {
         
-                        Rect bulletRect = { enemyBullet->getX() + 1, enemyBullet->getY() + 1, 3, 8 };
+                        Rect bulletRect = {
+                            static_cast<int16_t>(enemyBullet->getX() + 1),
+                            static_cast<int16_t>(enemyBullet->getY() + 1),
+                            3, 8
+                        };
         
                         if (Utils::collide(playerRect, bulletRect)) {
                             
@@ -515,7 +529,11 @@ GameStateType PlayGameState::update(GameStateType currentState, GameCookie *cook
         
                         if (bullet->isEnabled()) {
                             
-                            Rect bulletRect = { bullet->getX() + 1, bullet->getY() + 1, 3, 8 };
+                            Rect bulletRect = {
+                                static_cast<int16_t>(bullet->getX() + 1),
+                                static_cast<int16_t>(bullet->getY() + 1),
+                                3, 8
+                            };
                             
                             if (Utils::collide(enemyRect, bulletRect)) {
                                 
