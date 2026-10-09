@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "org.galaxyfighter"
         minSdk 21
-        targetSdk 28
+        targetSdk 35
         versionCode providers.gradleProperty("appVersionCode").map { it.toInteger() }.getOrElse(1)
         versionName providers.gradleProperty("appVersion").getOrElse("0.1.0")
         ndk {

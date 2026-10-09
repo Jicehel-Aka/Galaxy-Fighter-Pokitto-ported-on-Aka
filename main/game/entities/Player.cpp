@@ -175,72 +175,48 @@ void Player::incLives() {
 
 void Player::decX() {
 
-    switch (this->xInertia) {
-        
-        case -PLAYER_MAX_INERTIA_HALF ... -1:
-            this->xInertia = this->xInertia * 2;
-            break;
-            
-        case 0:
-            this->xInertia = -1;
-            break;
-
-        case 1:
-            this->xInertia = 0;
-            break;
-
-        case 2 ... PLAYER_MAX_INERTIA:
-            this->xInertia = this->xInertia / 2;
-            break;
-        
+    if (this->xInertia >= -PLAYER_MAX_INERTIA_HALF && this->xInertia <= -1) {
+        this->xInertia *= 2;
+    }
+    else if (this->xInertia == 0) {
+        this->xInertia = -1;
+    }
+    else if (this->xInertia == 1) {
+        this->xInertia = 0;
+    }
+    else if (this->xInertia >= 2 && this->xInertia <= PLAYER_MAX_INERTIA) {
+        this->xInertia /= 2;
     }
 
 }
 
 void Player::incX() {
 
-    switch (this->xInertia) {
-        
-        case -PLAYER_MAX_INERTIA ... -2:
-            this->xInertia = this->xInertia / 2;
-            break;
-            
-        case -1:
-            this->xInertia = 0;
-            break;
-
-        case 0:
-            this->xInertia = 1;
-            break;
-
-        case 1 ... PLAYER_MAX_INERTIA_HALF:
-            this->xInertia = this->xInertia * 2;
-            break;
-        
+    if (this->xInertia >= -PLAYER_MAX_INERTIA && this->xInertia <= -2) {
+        this->xInertia /= 2;
+    }
+    else if (this->xInertia == -1) {
+        this->xInertia = 0;
+    }
+    else if (this->xInertia == 0) {
+        this->xInertia = 1;
+    }
+    else if (this->xInertia >= 1 && this->xInertia <= PLAYER_MAX_INERTIA_HALF) {
+        this->xInertia *= 2;
     }
 
 }
 
 void Player::decelerate() {
 
-    switch (this->xInertia) {
-        
-        case -PLAYER_MAX_INERTIA ... -2:
-            this->xInertia = this->xInertia / 2;
-            break;
-            
-        case -1:
-            this->xInertia = 0;
-            break;
-            
-        case 1:
-            this->xInertia = 0;
-            break;
-            
-        case 2 ... PLAYER_MAX_INERTIA:
-            this->xInertia = this->xInertia / 2;
-            break;
-            
+    if (this->xInertia >= -PLAYER_MAX_INERTIA && this->xInertia <= -2) {
+        this->xInertia /= 2;
+    }
+    else if (this->xInertia == -1 || this->xInertia == 1) {
+        this->xInertia = 0;
+    }
+    else if (this->xInertia >= 2 && this->xInertia <= PLAYER_MAX_INERTIA) {
+        this->xInertia /= 2;
     }
 
 }

@@ -298,100 +298,40 @@ BulletType PlayGameState::getEnemyBulletType() {
 
     BulletType bulletType = BulletType::Small;
 
-    switch (this->level) {
-
-        case 0 ... 2:
+    if (this->level <= 2) {
+        bulletType = BulletType::Small;
+    }
+    else if (this->level <= 6) {
+        const uint8_t randBulletType = rand() % 6;
+        bulletType = randBulletType <= 3 ? BulletType::Small : BulletType::Medium;
+    }
+    else if (this->level <= 10) {
+        const uint8_t randBulletType = rand() % 6;
+        if (randBulletType <= 1) {
             bulletType = BulletType::Small;
-            break;
-
-        case 3 ... 6:
-            {
-                uint8_t randBulletType = rand() % 6;
-
-                switch (randBulletType) {
-
-                    case 0 ... 3:
-                        bulletType = BulletType::Small;
-                        break;
-
-                    case 4 ... 6:
-                        bulletType = BulletType::Medium;
-                        break;
-
-                }
-
-            }
-
-            break;
-
-        case 7 ... 10:
-            {
-                uint8_t randBulletType = rand() % 6;
-
-                switch (randBulletType) {
-
-                    case 0 ... 1:
-                        bulletType = BulletType::Small;
-                        break;
-
-                    case 2 ... 3:
-                        bulletType = BulletType::Medium;
-                        break;
-
-                    case 4 ... 5:
-                        bulletType = BulletType::Large;
-                        break;
-
-                }
-
-            }
-
-            break;
-
-        case 11 ... 14:
-            {
-                uint8_t randBulletType = rand() % 6;
-
-                switch (randBulletType) {
-
-                    case 0:
-                        bulletType = BulletType::Small;
-                        break;
-
-                    case 1 ... 2:
-                        bulletType = BulletType::Medium;
-                        break;
-
-                    case 3 ... 5:
-                        bulletType = BulletType::Large;
-                        break;
-
-                }
-
-            }
-
-            break;
-
-        default:
-            {
-                uint8_t randBulletType = rand() % 6;
-
-                switch (randBulletType) {
-
-                    case 0 ... 1:
-                        bulletType = BulletType::Medium;
-                        break;
-
-                    case 2 ... 5:
-                        bulletType = BulletType::Large;
-                        break;
-
-                }
-
-            }
-
-            break;
-
+        }
+        else if (randBulletType <= 3) {
+            bulletType = BulletType::Medium;
+        }
+        else {
+            bulletType = BulletType::Large;
+        }
+    }
+    else if (this->level <= 14) {
+        const uint8_t randBulletType = rand() % 6;
+        if (randBulletType == 0) {
+            bulletType = BulletType::Small;
+        }
+        else if (randBulletType <= 2) {
+            bulletType = BulletType::Medium;
+        }
+        else {
+            bulletType = BulletType::Large;
+        }
+    }
+    else {
+        const uint8_t randBulletType = rand() % 6;
+        bulletType = randBulletType <= 1 ? BulletType::Medium : BulletType::Large;
     }
 
     return bulletType;

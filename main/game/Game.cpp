@@ -42,7 +42,7 @@ void Game::loop(void) {
 		case GameStateType::SplashScreen_Activate:
 			this->splashScreenState.activate();
 			this->currentState = GameStateType::SplashScreen;
-			[[fallthrough]]
+			[[fallthrough]];
 
 		case GameStateType::SplashScreen:
 			this->currentState = this->splashScreenState.update(this->currentState);
@@ -52,7 +52,7 @@ void Game::loop(void) {
 		case GameStateType::TitleScreen_Activate: 
 			this->titleScreenState.activate();
 			this->currentState = GameStateType::TitleScreen;
-			[[fallthrough]]
+			[[fallthrough]];
 
 		case GameStateType::TitleScreen: 
 			this->currentState = this->titleScreenState.update(this->currentState, this->cookie);
@@ -62,7 +62,7 @@ void Game::loop(void) {
         case GameStateType::PlayGame_Activate: 
 			this->playGameState.activate();
 			this->currentState = GameStateType::PlayGame;
-			[[fallthrough]]
+			[[fallthrough]];
 
         case GameStateType::PlayGame: 
 			this->currentState = this->playGameState.update(this->currentState, this->cookie);
@@ -72,7 +72,7 @@ void Game::loop(void) {
         case GameStateType::HighScore_Activate: 
 			this->highScoreState.activate();
 			this->currentState = GameStateType::HighScore;
-			[[fallthrough]]
+			[[fallthrough]];
 
         case GameStateType::HighScore: 
 			this->currentState = this->highScoreState.update(this->currentState, this->cookie);

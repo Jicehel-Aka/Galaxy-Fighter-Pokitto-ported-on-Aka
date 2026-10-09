@@ -172,12 +172,12 @@ void CaptureController::move(bool &atTopOfScreen, bool &waitUntilComplete) {
             break;
 
         case CapturedPlayer::Joining:
-
+            {
             if (this->capturedRotation != 0 && this->y % 2 == 0) {
 
                 if (this->capturedRotation == 23) {
 
-                    this->capturedRotation == 0;
+                    this->capturedRotation = 0;
 
                 }
                 else {
@@ -197,30 +197,18 @@ void CaptureController::move(bool &atTopOfScreen, bool &waitUntilComplete) {
 
             }
 
-            switch (this->player->getX() - this->x) {
-
-                case -999 ... -17:      // Clone is to the right of player ..
-                    this->x--;
-                    break;
-
-                case -16:               // End Position ..
-                    break;
-
-                case -15 ... 0:         // Clone overlapping but to the right of player ..
-                    this->x++;
-                    break;
-
-                case 1 ... 15:          // Clone overlapping but to the left of player ..
-                    this->x--;
-                    break;
-
-                case 16:                // End Position ..
-                    break;
-
-                case 17 ... 999:        // Clone is to the left of player ..
-                    this->x++;
-                    break;
-
+            const int32_t playerDelta = this->player->getX() - this->x;
+            if (playerDelta <= -17) {       // Clone is to the right of player ..
+                this->x--;
+            }
+            else if (playerDelta >= -15 && playerDelta <= 0) {
+                this->x++;
+            }
+            else if (playerDelta >= 1 && playerDelta <= 15) {
+                this->x--;
+            }
+            else if (playerDelta >= 17) {   // Clone is to the left of player ..
+                this->x++;
             }
 
             if (((this->x == this->player->getX() - 16) || (this->x == this->player->getX() + 16)) && this->y == PLAYER_Y_POS) {
@@ -246,6 +234,7 @@ void CaptureController::move(bool &atTopOfScreen, bool &waitUntilComplete) {
             }
 
             break;
+            }
 
         case CapturedPlayer::Joined:
             break;
