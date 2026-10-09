@@ -32,7 +32,7 @@ l'APK de la release.
 | --- | --- | --- |
 | Windows 64 bits | `GalaxyFighter-windows-x64.zip` | Extraire l'archive complète, puis lancer `galaxy-fighter.exe` dans le dossier extrait. Garder le dossier `assets` à côté du programme. |
 | Linux x86_64 | `GalaxyFighter-linux-x64.zip` | Installer SDL2 (`sudo apt install libsdl2-2.0-0` sur Debian/Ubuntu), extraire l'archive, puis lancer `./galaxy-fighter` depuis le dossier extrait. Si nécessaire, rendre le fichier exécutable avec `chmod +x galaxy-fighter`. |
-| Android ARM64 / ARMv7 | `GalaxyFighter-android-unsigned.apk` | L'APK de release est non signé et ne s'installe pas tel quel. Il faut le signer (voir ci-dessous), transférer l'APK signé sur le téléphone, autoriser l'installation depuis cette source, puis ouvrir l'APK pour l'installer. |
+| Android ARM64 / ARMv7 | `GalaxyFighter-android-debug.apk` | APK signé automatiquement par Gradle pour l'installation directe. Transférer le fichier sur le téléphone, autoriser l'installation depuis cette source, puis ouvrir l'APK. |
 
 Sur PC, jouer au clavier avec les touches indiquées plus haut et quitter avec
 Échap. Sur Android, jouer avec le pavé directionnel et les boutons tactiles
@@ -41,23 +41,23 @@ aux archives PC et à l'APK ; garder le dossier `assets` intact pour les
 versions Windows/Linux. Les scores sont sauvegardés dans le dossier de
 préférences de l'application.
 
-### Signer l'APK Android pour une installation locale
+### Installation et signature Android
 
-Installer les outils Android SDK Build Tools et utiliser `keytool` pour créer
-une clé personnelle, puis `apksigner` pour signer l'APK téléchargé. Ne pas
-publier ni partager la clé privée ou son mot de passe :
+L'APK `GalaxyFighter-android-debug.apk` produit par le workflow est signé avec
+la clé de débogage générée automatiquement par Gradle ; aucune signature
+manuelle n'est nécessaire pour l'installer. Au premier lancement de l'APK,
+Android peut demander d'autoriser l'application utilisée pour ouvrir le fichier
+(navigateur, gestionnaire de fichiers, etc.) à installer des applications.
 
-```sh
-keytool -genkeypair -keystore galaxy-release.jks -alias galaxy \
-  -keyalg RSA -keysize 2048 -validity 10000
-apksigner sign --ks galaxy-release.jks --out GalaxyFighter-android.apk \
-  GalaxyFighter-android-unsigned.apk
-apksigner verify GalaxyFighter-android.apk
-```
-
-Les commandes demanderont le mot de passe de manière interactive. Pour mettre
-à jour une installation existante, signer chaque nouvelle version avec la même
-clé ; Android refusera une mise à jour signée avec une autre clé.
+Cette signature de débogage permet le test et l'installation par sideload, mais
+ne constitue pas une signature de distribution. Le runner de CI peut générer
+une clé différente à chaque exécution : si Android refuse une mise à jour à
+cause d'une signature différente, désinstaller l'ancienne application avant
+d'installer la nouvelle. La désinstallation efface les scores locaux. Une
+distribution avec mises à jour transparentes nécessite une clé de signature
+de production conservée de façon sécurisée et la signature de chaque version
+avec cette même clé ; aucune clé privée de production n'est stockée dans ce
+dépôt ou requise par le workflow.
 
 ## Porter un autre jeu destiné à l'AKA
 
@@ -111,13 +111,12 @@ Installer JDK 17, Android SDK/NDK et CMake 3.22.1. Placer les sources SDL2
 
 ```sh
 cd android
-gradle assembleRelease
+gradle assembleDebug
 ```
 
-L'APK non signé est créé sous
-`android/app/build/outputs/apk/release/`. Android exige qu'un APK soit signé
-avant installation : signez-le avec votre propre clé de distribution avant de
-l'installer ou de le distribuer. La compilation vise ARM64 et ARMv7. Le projet
+L'APK signé pour le test est créé sous
+`android/app/build/outputs/apk/debug/app-debug.apk`. La compilation vise
+ARM64 et ARMv7. Le projet
 Gradle récupère les sources Java et ressources
 Android de SDL2 depuis `android/SDL` et intègre la musique depuis
 `sdcard_files/galaxy/music` dans les assets de l'APK.
@@ -136,9 +135,11 @@ git push origin v0.1.0
 ```
 
 Le workflow compile chaque système puis attache les fichiers à la release du
-tag. Le déclenchement manuel (`workflow_dispatch`) ne publie pas de release.
-La signature Android automatique et la distribution via un magasin
-d'applications ne sont pas configurées.
+tag. L'APK Android attaché est signé avec la clé de débogage Gradle pour
+permettre l'installation directe ; ce n'est pas une signature de production.
+Le déclenchement manuel (`workflow_dispatch`) ne publie pas de release, mais
+conserve les archives comme artefacts du workflow. La signature de production
+et la distribution via un magasin d'applications ne sont pas configurées.
 
 ## Licences et crédits
 
