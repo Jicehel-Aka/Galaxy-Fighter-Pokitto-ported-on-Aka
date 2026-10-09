@@ -1,0 +1,6 @@
+/build/
+/build-*/
+/android/.gradle/
+/android/SDL/
+/android/generated-assets/
+/android/app/build/

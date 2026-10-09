@@ -1,0 +1,48 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "org.galaxyfighter"
+    compileSdk 35
+    ndkVersion "27.2.12479018"
+
+    defaultConfig {
+        applicationId "org.galaxyfighter"
+        minSdk 21
+        targetSdk 28
+        versionCode providers.gradleProperty("appVersionCode").map { it.toInteger() }.getOrElse(1)
+        versionName providers.gradleProperty("appVersion").getOrElse("0.1.0")
+        ndk {
+            abiFilters "arm64-v8a", "armeabi-v7a"
+        }
+        externalNativeBuild {
+            cmake {
+                arguments "-DSDL2_SOURCE_DIR=${rootProject.projectDir}/SDL"
+                cppFlags "-std=c++17"
+            }
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += "${rootProject.projectDir}/SDL/android-project/app/src/main/java"
+        main.res.srcDirs += "${rootProject.projectDir}/SDL/android-project/app/src/main/res"
+        main.assets.srcDirs += "${rootProject.projectDir}/generated-assets"
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file("../../desktop/CMakeLists.txt")
+            version "3.22.1"
+        }
+    }
+}
+
+tasks.register("copyGameAssets", Sync) {
+    from("../../sdcard_files/galaxy/music")
+    into("${rootProject.projectDir}/generated-assets/assets/galaxy/music")
+}
+
+tasks.named("preBuild").configure {
+    dependsOn("copyGameAssets")
+}
