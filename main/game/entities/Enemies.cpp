@@ -14,6 +14,7 @@ void Enemies::reset() {
     for (uint32_t x = 0; x < ENEMY_COUNT; x++) {
 
         Enemy &enemy = this->enemies[x]; 
+        enemy.setSequence(nullptr);
         enemy.setEnabled(false);
 
     }

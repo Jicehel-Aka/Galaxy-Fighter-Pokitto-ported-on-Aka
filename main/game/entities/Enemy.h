@@ -111,7 +111,7 @@ class Enemy {
         uint8_t wrapHorizontally = false;      // Wrap around screen when we get to - 20 or 200
         
         SequenceType sequenceType;       
-        const SequenceData * sequence;      
+        const SequenceData * sequence = nullptr;
         SequenceData sequenceData;
 
         uint8_t poofIndex = 0;
