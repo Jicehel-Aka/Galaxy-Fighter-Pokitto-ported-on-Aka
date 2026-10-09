@@ -148,7 +148,7 @@ GameStateType PlayGameState::update(GameStateType currentState, GameCookie *cook
                 const uint8_t speed[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 1 };
                 this->starFieldSpeed = speed[this->counter / 10];
             }
-            [[fallthrough]]
+            [[fallthrough]];
 
         case LevelStartType::StartOfGame:
         case LevelStartType::NewLife:
@@ -688,4 +688,3 @@ GameStateType PlayGameState::update(GameStateType currentState, GameCookie *cook
     return currentState;
 
 }
-

@@ -711,44 +711,35 @@ void PlayGameState::renderHUD() {
     
 void PlayGameState::renderStageDetails() {
 
-    switch (this->counter) {
-
-        case 30 ... 89:
+    if (this->counter >= 30 && this->counter <= 89) {
             
-            PD::setColor(0);
-            PD::fillRect(49, 80, 93, 11);
+        PD::setColor(0);
+        PD::fillRect(49, 80, 93, 11);
 
-            PD::drawBitmap(75, 84, Images::Char_R);
-            PD::drawBitmap(85, 84, Images::Char_E);
-            PD::drawBitmap(95, 84, Images::Char_A);
-            PD::drawBitmap(105, 84, Images::Char_D);
-            PD::drawBitmap(115, 84, Images::Char_Y);
+        PD::drawBitmap(75, 84, Images::Char_R);
+        PD::drawBitmap(85, 84, Images::Char_E);
+        PD::drawBitmap(95, 84, Images::Char_A);
+        PD::drawBitmap(105, 84, Images::Char_D);
+        PD::drawBitmap(115, 84, Images::Char_Y);
+    }
+    else if (this->counter >= 100 && this->counter <= 300) {
+        PD::setColor(0);
+        PD::fillRect(49, 80, 93, 11);
 
-            break;
+        PD::drawBitmap(55, 82, Images::Char_S);
+        PD::drawBitmap(65, 82, Images::Char_T);
+        PD::drawBitmap(75, 82, Images::Char_A);
+        PD::drawBitmap(85, 82, Images::Char_G);
+        PD::drawBitmap(95, 82, Images::Char_E);
 
-        case 100 ... 300:
+        uint8_t digits[3] = {};
+        Utils::extractDigits(digits, this->level + 1);
 
-            PD::setColor(0);
-            PD::fillRect(49, 80, 93, 11);
+        for (uint8_t j = 3; j > 0; --j) {
 
-            PD::drawBitmap(55, 82, Images::Char_S);
-            PD::drawBitmap(65, 82, Images::Char_T);
-            PD::drawBitmap(75, 82, Images::Char_A);
-            PD::drawBitmap(85, 82, Images::Char_G);
-            PD::drawBitmap(95, 82, Images::Char_E);
-            
-            uint8_t digits[3] = {};
-            Utils::extractDigits(digits, this->level + 1);
-        
-            for (uint8_t j = 3; j > 0; --j) {
-        
-                PD::drawBitmap(147 - (j * 10), 82, Images::StageNumbers[digits[j - 1]]);
-        
-            }
+            PD::drawBitmap(147 - (j * 10), 82, Images::StageNumbers[digits[j - 1]]);
 
-            break;
-
-
+        }
     }
 
 }

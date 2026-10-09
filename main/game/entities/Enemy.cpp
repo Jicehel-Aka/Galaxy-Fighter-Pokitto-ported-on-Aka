@@ -271,7 +271,7 @@ void Enemy::setFormationData(FormationData formationData) {
     this->y_Orig = formationData.y;
 
             
-    if (formationData.x <= -20 || formationData.x >= SCREEN_WIDTH || formationData.y <= -20 or formationData.y >= PD::height) {
+    if (formationData.x <= -20 || formationData.x >= SCREEN_WIDTH || formationData.y <= -20 || formationData.y >= PD::height) {
         
         this->visible = false;
         
@@ -565,7 +565,11 @@ void Enemy::updatePosition(bool alternateFrame) {
 
                     break;
                     
-                case SequenceType::Tractor1 ... SequenceType::Tractor5:
+                case SequenceType::Tractor1:
+                case SequenceType::Tractor2:
+                case SequenceType::Tractor3:
+                case SequenceType::Tractor4:
+                case SequenceType::Tractor5:
 
                     if (this->capturedPlayer != CapturedPlayer::Joined) {
 
@@ -603,7 +607,13 @@ void Enemy::updatePosition(bool alternateFrame) {
                     this->poofIndex = 0;
                     break;
                     
-                case SequenceType::TransformToBOSS_01 ... SequenceType::TransformToBOSS_07:
+                case SequenceType::TransformToBOSS_01:
+                case SequenceType::TransformToBOSS_02:
+                case SequenceType::TransformToBOSS_03:
+                case SequenceType::TransformToBOSS_04:
+                case SequenceType::TransformToBOSS_05:
+                case SequenceType::TransformToBOSS_06:
+                case SequenceType::TransformToBOSS_07:
 
                     this->poofIndex = static_cast<uint32_t>(this->sequenceData.patternType) - static_cast<uint32_t>(SequenceType::TransformToBOSS_00);
                     this->repeat = sequenceData.repeat;

@@ -194,103 +194,36 @@ void TitleScreenState::render(GameCookie *cookie) {
 
         for (uint8_t i = marquee10; i < marquee10 + 16; i++) {
 
-            switch (i) {
-
-                case 16 ... 19:
-                    PD::setColor(6);
-                    this->printSingleChar(highScores[i - 16]);
-                    break;
-
-                case 21 ... 26:
-                    PD::setColor(6);
-                    this->printSingleChar(highScores[i - 16]);
-                    break;
-
-                // Player 0
-
-                case 29 ... 31:
-                    PD::setColor(6);
-                    this->printChar(cookie->initials[0][i - 29]);
-                    break;
-
-                case 33 ... 40:
-                    {
+            if ((i >= 16 && i <= 19) || (i >= 21 && i <= 26)) {
+                PD::setColor(6);
+                this->printSingleChar(highScores[i - 16]);
+            }
+            else if (i >= 29 && i <= 92) {
+                bool printed = false;
+                for (uint8_t player = 0; player < 5 && !printed; ++player) {
+                    const uint8_t initialsStart = 29 + player * 13;
+                    const uint8_t scoreStart = initialsStart + 4;
+                    if (i >= initialsStart && i <= initialsStart + 2) {
+                        PD::setColor(6);
+                        this->printChar(cookie->initials[player][i - initialsStart]);
+                        printed = true;
+                    }
+                    else if (i >= scoreStart && i <= scoreStart + 7) {
                         PD::setColor(8);
                         uint8_t digits[8] = {};
-                        Utils::extractDigits(digits, cookie->score[0]);
-                        this->printNumber(digits[40 - i]);
+                        Utils::extractDigits(digits, cookie->score[player]);
+                        this->printNumber(digits[scoreStart + 7 - i]);
+                        printed = true;
                     }
-                    break;
-
-                // Player 1
-
-                case 42 ... 44:
-                    PD::setColor(6);
-                    this->printChar(cookie->initials[1][i - 42]);
-                    break;
-
-                case 46 ... 53:
-                    {
-                        PD::setColor(8);
-                        uint8_t digits[8] = {};
-                        Utils::extractDigits(digits, cookie->score[1]);
-                        this->printNumber(digits[53 - i]);
-                    }
-                    break;
-
-                // Player 2
-
-                case 55 ... 57:
-                    PD::setColor(6);
-                    this->printChar(cookie->initials[2][i - 55]);
-                    break;
-
-                case 59 ... 66:
-                    {
-                        PD::setColor(8);
-                        uint8_t digits[8] = {};
-                        Utils::extractDigits(digits, cookie->score[2]);
-                        this->printNumber(digits[66 - i]);
-                    }
-                    break;
-
-                // Player 3
-
-                case 68 ... 70:
-                    PD::setColor(6);
-                    this->printChar(cookie->initials[3][i - 68]);
-                    break;
-
-                case 72 ... 79:
-                    {
-                        PD::setColor(8);
-                        uint8_t digits[8] = {};
-                        Utils::extractDigits(digits, cookie->score[3]);
-                        this->printNumber(digits[79 - i]);
-                    }
-                    break;
-
-                // Player 4
-
-                case 81 ... 83:
-                    PD::setColor(6);
-                    this->printChar(cookie->initials[4][i - 81]);
-                    break;
-
-                case 85 ... 92:
-                    {
-                        PD::setColor(8);
-                        uint8_t digits[8] = {};
-                        Utils::extractDigits(digits, cookie->score[4]);
-                        this->printNumber(digits[92 - i]);
-                    }
-                    break;                    
-
-                default:
+                }
+                if (!printed) {
                     PD::setColor(0);
                     PD::print('-');
-                    break;
-
+                }
+            }
+            else {
+                PD::setColor(0);
+                PD::print('-');
             }
 
         }
@@ -314,20 +247,14 @@ void TitleScreenState::printSingleChar(char theChar) {
 
 void TitleScreenState::printChar(uint8_t charIndex) {
 
-    switch (charIndex) {
-
-        case 1 ... 26:
-            charIndex = charIndex + 64;
-            break;
-
-        case 27 ... 36:
-            charIndex = charIndex + 21;
-            break;
-
-        case 37:
-            charIndex = 46;
-            break;
-        
+    if (charIndex >= 1 && charIndex <= 26) {
+        charIndex += 64;
+    }
+    else if (charIndex >= 27 && charIndex <= 36) {
+        charIndex += 21;
+    }
+    else if (charIndex == 37) {
+        charIndex = 46;
     }
 
     char output[] = { ' ', '\0' };
