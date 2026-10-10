@@ -131,14 +131,14 @@ Android de SDL2 depuis `android/SDL` et intègre la musique depuis
 Le workflow GitHub Actions `.github/workflows/release.yml` compile Windows,
 Linux et Android. Pour lancer les builds manuellement depuis le site GitHub,
 ouvrir **Actions > Build and publish releases > Run workflow**, choisir la
-branche `main`, puis répondre à la question **Publier une release GitHub après
-les builds ?**
+branche `main`, puis choisir l'action dans **Que faire après les builds ?**
 
-- **Non** (choix par défaut) : les builds sont exécutés et les fichiers restent
-  disponibles dans les artefacts du workflow ; aucune release n'est publiée.
-- **Oui** : saisir un nouveau tag de version tel que `v1.1.1`. Après réussite
-  des builds, le workflow crée le tag sur le commit choisi et publie la release
-  avec les archives Windows/Linux et l'APK Android.
+- **build-only** (choix par défaut) : les builds sont exécutés et les fichiers
+  restent disponibles dans les artefacts du workflow ; aucune release n'est
+  publiée.
+- **publish-release** : saisir un nouveau tag de version tel que `v1.1.1`.
+  Après réussite des builds, le workflow crée le tag sur le commit choisi et
+  publie la release avec les archives Windows/Linux et l'APK Android.
 
 Un tag existant ne doit pas être réutilisé pour une autre version. Pour publier
 une mise à jour après `v1.1.1`, choisir un nouveau tag, par exemple `v1.1.2`.
