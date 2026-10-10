@@ -129,14 +129,21 @@ Android de SDL2 depuis `android/SDL` et intègre la musique depuis
 ## Releases
 
 Le workflow GitHub Actions `.github/workflows/release.yml` compile Windows,
-Linux et Android. Pour créer une release depuis le site GitHub, ouvrir
-**Releases > Draft a new release**, saisir un nouveau tag commençant par `v`
-(par exemple `v1.0.1`), choisir `main` comme cible si la version à publier y
-est fusionnée, puis cliquer **Publish release**. La création du tag déclenche
-le workflow ; après réussite des trois builds, les archives Windows/Linux et
-l'APK Android sont ajoutés à la release.
+Linux et Android. Pour lancer les builds manuellement depuis le site GitHub,
+ouvrir **Actions > Build and publish releases > Run workflow**, choisir la
+branche `main`, puis répondre à la question **Publier une release GitHub après
+les builds ?**
 
-On peut également créer et pousser le tag annoté en ligne de commande :
+- **Non** (choix par défaut) : les builds sont exécutés et les fichiers restent
+  disponibles dans les artefacts du workflow ; aucune release n'est publiée.
+- **Oui** : saisir un nouveau tag de version tel que `v1.1.1`. Après réussite
+  des builds, le workflow crée le tag sur le commit choisi et publie la release
+  avec les archives Windows/Linux et l'APK Android.
+
+Un tag existant ne doit pas être réutilisé pour une autre version. Pour publier
+une mise à jour après `v1.1.1`, choisir un nouveau tag, par exemple `v1.1.2`.
+On peut aussi créer et pousser le tag annoté avec Git ; ce déclenchement publie
+la release automatiquement, sans lancement manuel :
 
 ```sh
 git tag -a v1.0.1 -m "Galaxy Fighter 1.0.1"
@@ -146,9 +153,10 @@ git push origin v1.0.1
 L'APK Android attaché, `GalaxyFighter-android-debug.apk`, est signé avec la clé
 de débogage Gradle pour
 permettre l'installation directe ; ce n'est pas une signature de production.
-Le déclenchement manuel (`workflow_dispatch`) ne publie pas de release, mais
-conserve les archives comme artefacts du workflow. La signature de production
-et la distribution via un magasin d'applications ne sont pas configurées.
+L'option manuelle permet ainsi de choisir au lancement si l'exécution doit
+se limiter aux artefacts ou publier une release. La signature Android de
+production et la distribution via un magasin d'applications ne sont pas
+configurées.
 
 ## Licences et crédits
 
