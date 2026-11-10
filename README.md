@@ -165,3 +165,13 @@ Le jeu d'origine est sous BSD-3-Clause (voir `LICENSE.original`). Le dépôt
 inclut aussi `LICENSE` pour le port et ses composants. SDL2 est fourni par les
 environnements de build et reste sous sa licence zlib ; il n'est pas recopié
 dans les archives desktop. Crédits du jeu : Press Play On Tape.
+
+## Jeu d'origine et licence
+
+- **Jeu :** Galaxy Fighter
+- **Auteur :** Press Play On Tape
+- **Plateforme d'origine :** Pokitto
+- **Source :** <https://github.com/Press-Play-On-Tape/GalaxyFighter_Pokitto>
+- **Licence :** BSD 3-Clause
+
+Ce portage (AKA, PC, Android) est distribué sous la même licence que le jeu d'origine. Le texte complet, avec le copyright d'origine, est dans le fichier [LICENSE](LICENSE). Tout le mérite du jeu revient à son auteur.
